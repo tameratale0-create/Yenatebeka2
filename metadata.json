@@ -1,0 +1,6 @@
+{
+  "name": "የጠበቃው ጉልበት - የኢትዮጵያ የሕግ ምክክርና የክስ ሂደት መቆጣጠሪያ",
+  "description": "የኢትዮጵያ የፍትሐብሔርና የወንጀለኛ መቅጫ ሕጎችን መሠረት ያደረገ ዘመናዊ የሕግ ምክክር፣ የፍርድ ቤት ቀጠሮ መከታተያ፣ የሰነዶች ትንተና እና የክስ ሂደት መቆጣጠሪያ ማዕከል።",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

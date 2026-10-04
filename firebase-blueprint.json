@@ -1,0 +1,145 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile in the Ethiopian Legal Tech platform",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique user ID matching auth UID"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full name with grandfather name (ስም ከነአያት)"
+        },
+        "emailOrPhone": {
+          "type": "string",
+          "description": "Email address or phone number"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["client", "lawyer", "admin"],
+          "description": "Role of the registered account"
+        },
+        "city": {
+          "type": "string",
+          "description": "City or region of the user"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp in ISO format"
+        }
+      },
+      "required": ["id", "fullName", "emailOrPhone", "role", "createdAt"]
+    },
+    "Lawyer": {
+      "title": "Lawyer",
+      "description": "Licensed advocate registered in the platform directory",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique advocate ID matching auth UID"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full legal name with grandfather name (ስም እስከ አያት)"
+        },
+        "emailOrPhone": {
+          "type": "string",
+          "description": "Phone number or email for client contact"
+        },
+        "licenseNumber": {
+          "type": "string",
+          "description": "Advocacy license number issued by the Ministry of Justice"
+        },
+        "licenseLevel": {
+          "type": "string",
+          "enum": ["all_federal_courts", "federal_high_first_instance", "federal_first_instance", "regional_supreme"],
+          "description": "Court level authorized to represent"
+        },
+        "officeAddress": {
+          "type": "string",
+          "description": "Office or chamber location address (ከተማ፣ ክ/ከተማ፣ ሕንፃ፣ ቢሮ ቁጥር)"
+        },
+        "specialization": {
+          "type": "string",
+          "description": "Primary areas of legal expertise (ፍትሐብሔር፣ ንግድና ኮንትራት፣ ወንጀል፣ ቤተሰብ ወዘተ)"
+        },
+        "experienceYears": {
+          "type": "number",
+          "description": "Years of active legal advocacy practice"
+        },
+        "bio": {
+          "type": "string",
+          "description": "Brief professional summary or chamber profile"
+        },
+        "isVerified": {
+          "type": "boolean",
+          "description": "Verification status of the lawyer's advocacy credential"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Registration date in ISO format"
+        }
+      },
+      "required": ["id", "fullName", "emailOrPhone", "licenseNumber", "licenseLevel", "officeAddress", "specialization", "createdAt"]
+    },
+    "ConsultationRequest": {
+      "title": "ConsultationRequest",
+      "description": "Consultation inquiry sent from client to registered lawyer",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Inquiry identifier"
+        },
+        "clientId": {
+          "type": "string",
+          "description": "UID of the client sending inquiry"
+        },
+        "clientName": {
+          "type": "string",
+          "description": "Name of the client"
+        },
+        "clientContact": {
+          "type": "string",
+          "description": "Phone or email of the client"
+        },
+        "lawyerId": {
+          "type": "string",
+          "description": "UID of the lawyer receiving inquiry"
+        },
+        "caseSummary": {
+          "type": "string",
+          "description": "Brief description of legal issue"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "accepted", "declined"],
+          "description": "Status of the inquiry"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp in ISO format"
+        }
+      },
+      "required": ["id", "clientId", "clientName", "clientContact", "lawyerId", "caseSummary", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "entity": "User",
+      "description": "Private user account records"
+    },
+    "/lawyers/{lawyerId}": {
+      "entity": "Lawyer",
+      "description": "Public advocate directory profiles"
+    },
+    "/consultationRequests/{requestId}": {
+      "entity": "ConsultationRequest",
+      "description": "Inquiries between clients and lawyers"
+    }
+  }
+}

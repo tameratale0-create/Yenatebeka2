@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // User profiles (clients and lawyers)
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isSignedIn();
+      allow list: if false;
+      allow create: if isValidId(userId)
+                    && request.resource.data.id == userId
+                    && request.resource.data.fullName is string
+                    && request.resource.data.fullName.size() >= 2
+                    && request.resource.data.emailOrPhone is string
+                    && request.resource.data.role in ['client', 'lawyer', 'admin'];
+      allow update: if isOwner(userId)
+                    && request.resource.data.id == resource.data.id;
+      allow delete: if isOwner(userId);
+    }
+
+    // Public Lawyers Directory (all registered clients and visitors can browse advocates and addresses)
+    match /lawyers/{lawyerId} {
+      allow read: if true;
+      allow create: if isValidId(lawyerId)
+                    && request.resource.data.id == lawyerId
+                    && request.resource.data.fullName is string
+                    && request.resource.data.licenseNumber is string
+                    && request.resource.data.officeAddress is string;
+      allow update: if isOwner(lawyerId)
+                    && request.resource.data.id == resource.data.id;
+      allow delete: if isOwner(lawyerId);
+    }
+
+    // Consultation requests between clients and registered advocates
+    match /consultationRequests/{requestId} {
+      allow read: if isSignedIn()
+                  && (resource.data.clientId == request.auth.uid || resource.data.lawyerId == request.auth.uid);
+      allow create: if isSignedIn()
+                    && isValidId(requestId)
+                    && request.resource.data.clientId == request.auth.uid
+                    && request.resource.data.lawyerId is string
+                    && request.resource.data.caseSummary is string;
+      allow update: if isSignedIn()
+                    && (resource.data.clientId == request.auth.uid || resource.data.lawyerId == request.auth.uid);
+      allow delete: if isSignedIn() && resource.data.clientId == request.auth.uid;
+    }
+  }
+}
